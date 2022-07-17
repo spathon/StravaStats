@@ -1,0 +1,15 @@
+
+
+.weektip {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  padding: 10px;
+  font-size: .9rem;
+}
+
+
+.meta {
+  color: #ccc;
+  font-size: .8rem;
+}
