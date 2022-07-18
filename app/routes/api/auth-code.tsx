@@ -18,27 +18,35 @@ export const loader: LoaderFunction = async ({ request }) => {
     })
   }).then((resp) => resp.json())
 
-  const activities = await fetch('https://www.strava.com/api/v3/athlete/activities?per_page=100', {
+  const resp = await fetch('https://www.strava.com/api/v3/athlete/activities?per_page=100', {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${user.access_token}`,
     },
-  }).then((resp) => resp.json())
+  })
+  const activities = await resp.json()
 
-  return json(activities);
+  const athlete = {
+    username: user.athlete.username,
+    city: user.athlete.city,
+    country: user.athlete.country,
+    image: user.athlete.profile_medium,
+  }
+
+  if (resp.status !== 200) return json({ error: 'You need to approve activities to use this app' })
+  return json({ activities, athlete });
 };
 
 export default function Products() {
-  const activities = useLoaderData();
-  console.log(activities)
+  const { activities, athlete, error } = useLoaderData()
   useEffect(() => {
+    if (error) return
     window.localStorage.setItem('activities', JSON.stringify(activities))
+    window.localStorage.setItem('athlete', JSON.stringify(athlete))
+    window.location.href = window.location.origin
   }, [])
 
-  return (
-    <div>
-      <h1>Products</h1>
+  if (error) return <h1>Error: {error}</h1>
 
-    </div>
-  );
+  return (<h1>Loading....</h1>)
 }
