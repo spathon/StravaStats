@@ -7,7 +7,9 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react"
+import { useEffect, useState } from 'react'
 import styles from "~/styles/main.css";
+import Header from './layout/Header'
 
 
 export const meta: MetaFunction = () => ({
@@ -29,6 +31,20 @@ export function links() {
 
 
 export default function App() {
+  const [user, setUser] = useState({ state: 'LOADING' })
+  useEffect(() => {
+    const userString = localStorage.getItem('user')
+    if (userString) {
+      setUser({
+        state: 'LOGGED_IN',
+        ...(JSON.parse(userString)),
+        hasActivities: localStorage.getItem('activities'),
+      })
+    } else {
+      setUser({ state: 'LOGGED_OUT'})
+    }
+  }, [])
+
   return (
     <html lang="en">
       <head>
@@ -36,7 +52,12 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <Outlet />
+        {user.state !== 'LOADING' && (
+          <>
+            <Header user={user}/>
+            <Outlet />
+          </>
+        )}
         <ScrollRestoration />
         <Scripts />
         <LiveReload />

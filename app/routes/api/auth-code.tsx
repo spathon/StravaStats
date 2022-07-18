@@ -3,11 +3,12 @@ import { json } from "@remix-run/node"; // or "@remix-run/cloudflare"
 import { useLoaderData } from "@remix-run/react";
 import { useEffect } from 'react'
 
+
 export const loader: LoaderFunction = async ({ request }) => {
   const { searchParams } = new URL(request.url)
   if (!searchParams.has('code')) throw new Error('Nope')
 
-  const user = await fetch('https://www.strava.com/api/v3/oauth/token', {
+  const userResp = await fetch('https://www.strava.com/api/v3/oauth/token', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -21,28 +22,29 @@ export const loader: LoaderFunction = async ({ request }) => {
   const resp = await fetch('https://www.strava.com/api/v3/athlete/activities?per_page=100', {
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${user.access_token}`,
+      'Authorization': `Bearer ${userResp.access_token}`,
     },
   })
   const activities = await resp.json()
 
-  const athlete = {
-    username: user.athlete.username,
-    city: user.athlete.city,
-    country: user.athlete.country,
-    image: user.athlete.profile_medium,
+  const user = {
+    username: userResp.athlete.username,
+    city: userResp.athlete.city,
+    country: userResp.athlete.country,
+    image: userResp.athlete.profile_medium,
   }
 
   if (resp.status !== 200) return json({ error: 'You need to approve activities to use this app' })
-  return json({ activities, athlete });
+  return json({ activities, user });
 };
 
-export default function Products() {
-  const { activities, athlete, error } = useLoaderData()
+
+export default function SetUserData() {
+  const { activities, user, error } = useLoaderData()
   useEffect(() => {
     if (error) return
     window.localStorage.setItem('activities', JSON.stringify(activities))
-    window.localStorage.setItem('athlete', JSON.stringify(athlete))
+    window.localStorage.setItem('user', JSON.stringify(user))
     window.location.href = window.location.origin
   }, [])
 

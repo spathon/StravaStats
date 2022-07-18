@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react'
 import { getWeek } from 'date-fns'
 import {
-  BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Bar, AreaChart, Area
+  BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Bar, ResponsiveContainer,
 } from 'recharts'
-// import activities from '../../activities.json' assert { type: "json" }
 import styles from "~/styles/chart.css";
 
 
@@ -64,32 +63,29 @@ function WeekTip({ payload, label }) {
 
 function MyBar({ weeks }) {
   return (
-    <BarChart
-      width={1200}
-      height={300}
-      barCategoryGap="1%"
-      data={weeks}
-    >
-      <defs>
-        {stacks.map(({ key, color }) => <Gradient key={key} id={key} color={color} />)}
-      </defs>
-      <XAxis dataKey="weekNr" />
-      <CartesianGrid strokeDasharray="1 3" />
-      <YAxis />
-      <Tooltip
-        cursor={{ opacity: .2 }}
-        content={<WeekTip />}
-      />
-      {stacks.map(({ key, color }) => (
-        <Bar
-          key={key}
-          somethning={color}
-          dataKey={key}
-          stackId="a"
-          fill={`url(#${key})`}
+    <ResponsiveContainer width="100%" height={300}>
+      <BarChart barCategoryGap="1%" data={weeks}>
+        <defs>
+          {stacks.map(({ key, color }) => <Gradient key={key} id={key} color={color} />)}
+        </defs>
+        <XAxis dataKey="weekNr" />
+        <CartesianGrid strokeDasharray="1 3" />
+        <YAxis />
+        <Tooltip
+          cursor={{ opacity: .2 }}
+          content={<WeekTip />}
         />
-      ))}
-    </BarChart>
+        {stacks.map(({ key, color }) => (
+          <Bar
+            key={key}
+            somethning={color}
+            dataKey={key}
+            stackId="a"
+            fill={`url(#${key})`}
+          />
+        ))}
+      </BarChart>
+    </ResponsiveContainer>
   )
 }
 
@@ -144,7 +140,7 @@ export default function Index() {
   // console.log(weeks)
 
   return (
-    <div>
+    <div className="page page--wide">
       <h1>Activities</h1>
       {isClient && <MyBar weeks={weeks} />}
     </div>

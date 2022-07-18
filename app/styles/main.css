@@ -27,6 +27,22 @@ a {
   text-align: center;
 }
 
+
+.header {
+  height: 50px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--strava-color);
+  color: #fff;
+  border-bottom: 1px solid #db4201;
+  box-shadow: 0 0 15px rgba(252, 76, 2, .6);
+}
+.logo {
+  font-size: 1.5rem;
+}
+
 .page {
   margin: 2rem auto;
   background: #fff;
@@ -34,6 +50,10 @@ a {
   padding: 1rem;
   border: 1px solid #eee;
   border-radius: 4px;
+}
+
+.page--wide {
+  max-width: 1400px;
 }
 
 
