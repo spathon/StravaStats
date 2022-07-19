@@ -4,19 +4,19 @@ import { Link } from '@remix-run/react'
 export default function Header({ user }) {
   const clearData = () => {
     localStorage.clear()
-    window.location.reload()
+    window.location.href = window.location.origin
   }
 
   return (
     <div className="header">
-      <div className="logo">My stats</div>
+      <div className="logo">Strava stats</div>
       <div>
         {user?.username
           ? (
             <span>
-              Hello, {user?.username}!
-              {' '}<Link to="/api/auth-strava">Update data</Link>
-              {' '}<button type="button" onClick={clearData}>Logout</button>
+              Hello, {user?.username}
+              <Link to="/api/auth-strava">Update data</Link>
+              <button type="button" onClick={clearData}>Logout</button>
             </span>
           ) : <Link to="/api/auth-strava">Login with Strava</Link>
         }

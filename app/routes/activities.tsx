@@ -3,12 +3,18 @@ import { getWeek } from 'date-fns'
 import {
   BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Bar, ResponsiveContainer,
 } from 'recharts'
-import styles from "~/styles/chart.css";
 
 
-export function links() {
-  return [{ rel: "stylesheet", href: styles }];
-}
+const stacks = [
+  { key: 'e_1', color: '#5dcafa' },
+  { key: 'e_2', color: '#82ca9d' },
+  { key: 'e_3', color: '#ff5f6b' },
+  { key: 'e_4', color: '#8884d8' },
+  { key: 'e_5', color: '#18f4d8' },
+  { key: 'e_6', color: '#5584f8' },
+]
+const getColor = (key) => stacks.find((s) => s.key === key)?.color || ''
+
 
 function Gradient({ id, color }) {
   return (
@@ -19,25 +25,10 @@ function Gradient({ id, color }) {
   )
 }
 
-const stacks = [
-  { key: 'e_1', color: '#5dcafa' },
-  { key: 'e_2', color: '#82ca9d' },
-  { key: 'e_3', color: '#ff5f6b' },
-  { key: 'e_4', color: '#8884d8' },
-  { key: 'e_5', color: '#18f4d8' },
-  { key: 'e_6', color: '#5584f8' },
-]
-
-
-function getColor(key) {
-  return stacks.find((s) => s.key === key)?.color || ''
-}
 
 function WeekTip({ payload, label }) {
-  // console.log('Props', payload)
   return (
     <div className="weektip">
-      {/* <h3 className="weektip__label">Week {label}</h3> */}
       <table className="table">
         <tbody>
           {payload.slice().reverse().map((bar, index) => (
@@ -94,22 +85,17 @@ export default function Index() {
   const [activities, setActive] = useState()
   const [isClient, setIsClient] = useState(false)
   useEffect(() => {
-    console.log('Start')
     const gotData = localStorage.getItem('activities')
     if (gotData) {
       const things = JSON.parse(gotData)
       if (Array.isArray(things)) {
         setActive(things)
         setIsClient(true)
-      } else {
-        console.log('What is data?', things)
       }
-    } else {
-      console.log('EMPTY???', things)
     }
   }, [])
 
-  if (!activities) return <h1>Loading</h1>
+  if (!activities) return <div className="page text-center"><h1>Loading</h1></div>
   const thisWeek = getWeek(new Date(), { weekStartsOn: 1 })
   const weeks = Array(thisWeek)
     .fill()
@@ -118,7 +104,7 @@ export default function Index() {
       total: 0,
       activities: [],
     }))
-  console.log(activities)
+
   activities
     .filter((event) => new Date(event.start_date).getFullYear() === 2022)
     .filter((event) => event.type === 'Run' || event.type === 'Hike' || event.type === 'BackcountrySki')
@@ -134,14 +120,12 @@ export default function Index() {
       week.activities.unshift(event)
       week[`e_${week.activities.length}`] = event.elevation
       week.total += event.elevation
-      // console.log(week)
     })
-
-  // console.log(weeks)
 
   return (
     <div className="page page--wide">
-      <h1>Activities</h1>
+      <h1 className="text-center">Activities elevation</h1>
+      <br />
       {isClient && <MyBar weeks={weeks} />}
     </div>
   )

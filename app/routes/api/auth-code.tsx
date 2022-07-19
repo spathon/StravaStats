@@ -6,9 +6,9 @@ import { useEffect } from 'react'
 
 export const loader: LoaderFunction = async ({ request }) => {
   const { searchParams } = new URL(request.url)
-  if (!searchParams.has('code')) throw new Error('Nope')
+  if (!searchParams.has('code')) return json({ error: 'Ah ah ah, you didn\'t say the magic word' })
 
-  const userResp = await fetch('https://www.strava.com/api/v3/oauth/token', {
+  const userBlob = await fetch('https://www.strava.com/api/v3/oauth/token', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -17,7 +17,9 @@ export const loader: LoaderFunction = async ({ request }) => {
       code: searchParams.get('code'),
       grant_type: 'authorization_code',
     })
-  }).then((resp) => resp.json())
+  })
+  const userResp = await userBlob.json()
+  if (userBlob.status !== 200) return json({ error: 'Could not get user' })
 
   const resp = await fetch('https://www.strava.com/api/v3/athlete/activities?per_page=100', {
     headers: {
@@ -48,7 +50,17 @@ export default function SetUserData() {
     window.location.href = window.location.origin
   }, [])
 
-  if (error) return <h1>Error: {error}</h1>
-
-  return (<h1>Loading....</h1>)
+  return (
+    <div className="page text-center">
+      {error
+        ? (
+          <>
+            <h1>Error!</h1>
+            <h2>{error}</h2>
+          </>
+        )
+        : <h1>Loading...</h1>
+      }
+    </div>
+  )
 }

@@ -6,7 +6,11 @@ body {
   background: #fbf8f7;
 }
 a {
+  color: #5dcafa;
   text-decoration: none;
+}
+p {
+  margin: 0 0 1rem;
 }
 
 .table {
@@ -27,6 +31,17 @@ a {
   text-align: center;
 }
 
+.app {
+  height: 100vh;
+  display: grid;
+  grid-template-rows: 1fr auto;
+}
+.footer {
+  padding: 5px;
+  text-align: center;
+  font-size: .8rem;
+  color: #777;
+}
 
 .header {
   height: 50px;
@@ -39,6 +54,26 @@ a {
   border-bottom: 1px solid #db4201;
   box-shadow: 0 0 15px rgba(252, 76, 2, .6);
 }
+
+.header a,
+.header button {
+  padding: 2px 7px;
+  margin: 0 0 0 10px;
+  background: #ff550c;
+  border: 1px solid #ff6624;
+  border-radius: 4px;
+  color: #461500;
+  font: inherit;
+  display: inline-block;
+}
+.header a:hover,
+.header button:hover {
+  background: #ff6624;
+  color: #290c00;
+  border-color: #df4604;
+  cursor: pointer;
+}
+
 .logo {
   font-size: 1.5rem;
 }
@@ -66,4 +101,19 @@ a {
 }
 .btn:hover {
   filter: brightness(0.85);
+}
+
+
+.weektip {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  padding: 10px;
+  font-size: .9rem;
+}
+
+
+.meta {
+  color: #ccc;
+  font-size: .8rem;
 }

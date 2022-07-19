@@ -14,16 +14,19 @@ export default function Index() {
 
   return (
     <div className="page text-center">
-      <h1>Give me stats!</h1>
+      <h1>Strava elevation stats!</h1>
       <br />
-      <br />
-      {hasActivities && (
-        <>
-          <Link to="/activities">View stats</Link>
-          {' - '}
-        </>
+      {!hasActivities && (
+        <p>
+          Authorize Strava to view elevation graph of your activities this year.
+          <br />
+          The data is only stored in the browser.
+        </p>
       )}
-      <Link to="/api/auth-strava" className="btn">Auth strava</Link>
+      {hasActivities
+        ? <Link to="/activities" className="btn">View my graph</Link>
+        : <Link to="/api/auth-strava" className="btn">Authorize Strava</Link>
+      }
     </div>
   )
 }

@@ -52,12 +52,19 @@ export default function App() {
         <Links />
       </head>
       <body>
-        {user.state !== 'LOADING' && (
-          <>
-            <Header user={user}/>
-            <Outlet />
-          </>
-        )}
+        <div className="app">
+          <div>
+            {user.state !== 'LOADING' && (
+              <>
+                <Header user={user}/>
+                <Outlet />
+              </>
+            )}
+          </div>
+          <div className="footer">
+            &copy; spathon | <a href="https://github.com/spathon/StravaStats">Code</a>
+          </div>
+        </div>
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
