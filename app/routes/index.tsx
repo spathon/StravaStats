@@ -1,5 +1,5 @@
 import { useOutletContext } from '@remix-run/react'
-import Activities from '~/views/activities'
+import Activities from '~/views/Activities'
 import Authorize from '~/views/Authorize'
 
 
