@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { getWeek } from 'date-fns'
+import { getWeek, getMonth } from 'date-fns'
 import {
   BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Bar, ResponsiveContainer,
 } from 'recharts'
@@ -83,9 +83,13 @@ function MyBar({ weeks, measure }) {
 
 export default function Activities({ activities }) {
   const [type, setType] = useState('elevation')
+  const [time, setTime] = useState('weeks')
   const measure = useMemo(() => (type === 'elevation' ? 'm' : 'km'), [type])
+  const isWeeks = time === 'weeks'
 
-  const thisWeek = getWeek(new Date(), { weekStartsOn: 1 })
+  const thisWeek = isWeeks
+    ? getWeek(new Date(), { weekStartsOn: 1 })
+    : getMonth(new Date())
   const weeks = Array(thisWeek)
     .fill()
     .map((val, index) => ({
@@ -106,7 +110,9 @@ export default function Activities({ activities }) {
       distance: Math.round(((event.distance / 1000) + Number.EPSILON) * 10) / 10,
     }))
     .forEach((event) => {
-      const weekNr = getWeek(event.startDate, { weekStartsOn: 1 })
+      const weekNr = isWeeks
+        ? getWeek(event.startDate, { weekStartsOn: 1 })
+        : getMonth(event.startDate)
       const week = weeks.find((w) => w.weekNr === weekNr)
       week.activities.unshift(event)
       week[`e_${week.activities.length}`] = event[type]
@@ -117,16 +123,30 @@ export default function Activities({ activities }) {
     <div className="page page--wide">
       <h1 className="text-center">Activities {type}</h1>
 
+      <div className="options">
       <div className="select-type">
-        <label>
-          <input type="radio" checked={type === 'elevation'} name="type" onChange={() => setType('elevation')} />
-          {' '}Elevation
-        </label>
-        {' '}
-        <label>
-          <input type="radio" checked={type === 'distance'} name="type" onChange={() => setType('distance')} />
-          {' '}Distance
-        </label>
+          <label>
+            <input type="radio" checked={time === 'weeks'} name="time" onChange={() => setTime('weeks')} />
+            {' '}Weeks
+          </label>
+          {' '}
+          <label>
+            <input type="radio" checked={time === 'months'} name="time" onChange={() => setTime('months')} />
+            {' '}Months
+          </label>
+        </div>
+
+        <div className="select-type">
+          <label>
+            <input type="radio" checked={type === 'elevation'} name="type" onChange={() => setType('elevation')} />
+            {' '}Elevation
+          </label>
+          {' '}
+          <label>
+            <input type="radio" checked={type === 'distance'} name="type" onChange={() => setType('distance')} />
+            {' '}Distance
+          </label>
+        </div>
       </div>
 
       <MyBar weeks={weeks} measure={measure} />

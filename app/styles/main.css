@@ -121,11 +121,12 @@ p {
 }
 
 
-.select-type {
-  text-align: right;
+
+.options {
+  display: flex;
+  justify-content: space-between;
   padding: 0 0 .5rem;
 }
-
 .select-type label {
   cursor: pointer;
 }
