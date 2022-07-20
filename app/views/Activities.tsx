@@ -107,7 +107,7 @@ export default function Activities({ activities }) {
 
   const thisWeek = isWeeks
     ? getWeek(new Date(), { weekStartsOn: 1 })
-    : getMonth(new Date())
+    : getMonth(new Date()) + 1
   const weeks = Array(thisWeek)
     .fill()
     .map((val, index) => ({
@@ -130,7 +130,7 @@ export default function Activities({ activities }) {
     .forEach((event) => {
       const weekNr = isWeeks
         ? getWeek(event.startDate, { weekStartsOn: 1 })
-        : getMonth(event.startDate)
+        : getMonth(event.startDate) + 1
       const week = weeks.find((w) => w.weekNr === weekNr)
       week.activities.unshift(event)
       week[`e_${week.activities.length}`] = event[type]
