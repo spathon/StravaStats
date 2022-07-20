@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useMemo, useEffect, useState } from 'react'
 import { getWeek } from 'date-fns'
 import {
   BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Bar, ResponsiveContainer,
@@ -26,7 +26,7 @@ function Gradient({ id, color }) {
 }
 
 
-function WeekTip({ payload, label }) {
+function WeekTip({ payload, label, measure }) {
   return (
     <div className="weektip">
       <table className="table">
@@ -36,13 +36,13 @@ function WeekTip({ payload, label }) {
               <td className="activity_name">
                 {bar?.payload?.activities?.[index]?.name}
               </td>
-              <td>{bar?.payload?.[bar.name]}<span className="meta"> m</span></td>
+              <td>{bar?.payload?.[bar.name]}<span className="meta"> {measure}</span></td>
             </tr>
           ))}
           <tr>
             <th>Total</th>
             <th className="weektip__total">
-              {payload?.[0]?.payload?.total}<span className="meta"> m</span>
+              {payload?.[0]?.payload?.total}<span className="meta"> {measure}</span>
             </th>
           </tr>
         </tbody>
@@ -52,7 +52,7 @@ function WeekTip({ payload, label }) {
 }
 
 
-function MyBar({ weeks }) {
+function MyBar({ weeks, measure }) {
   return (
     <ResponsiveContainer width="100%" height={300}>
       <BarChart barCategoryGap="1%" data={weeks}>
@@ -61,10 +61,10 @@ function MyBar({ weeks }) {
         </defs>
         <XAxis dataKey="weekNr" />
         <CartesianGrid strokeDasharray="1 3" />
-        <YAxis />
+        <YAxis tickFormatter={(val) => `${val} ${measure}`} />
         <Tooltip
           cursor={{ opacity: .2 }}
-          content={<WeekTip />}
+          content={<WeekTip measure={measure} />}
         />
         {stacks.map(({ key, color }) => (
           <Bar
@@ -83,6 +83,7 @@ function MyBar({ weeks }) {
 
 export default function Index() {
   const [activities, setActive] = useState()
+  const [type, setType] = useState('elevation')
   const [isClient, setIsClient] = useState(false)
   useEffect(() => {
     const gotData = localStorage.getItem('activities')
@@ -94,6 +95,7 @@ export default function Index() {
       }
     }
   }, [])
+  const measure = useMemo(() => (type === 'elevation' ? 'm' : 'km'), [type])
 
   if (!activities) return <div className="page text-center"><h1>Loading</h1></div>
   const thisWeek = getWeek(new Date(), { weekStartsOn: 1 })
@@ -105,6 +107,7 @@ export default function Index() {
       activities: [],
     }))
 
+  // console.log(activities)
   activities
     .filter((event) => new Date(event.start_date).getFullYear() === 2022)
     .filter((event) => event.type === 'Run' || event.type === 'Hike' || event.type === 'BackcountrySki')
@@ -113,20 +116,33 @@ export default function Index() {
       name: event.name,
       startDate: new Date(event.start_date),
       elevation: Math.round(event.total_elevation_gain),
+      distance: Math.round(((event.distance / 1000) + Number.EPSILON) * 10) / 10,
     }))
     .forEach((event) => {
       const weekNr = getWeek(event.startDate, { weekStartsOn: 1 })
       const week = weeks.find((w) => w.weekNr === weekNr)
       week.activities.unshift(event)
-      week[`e_${week.activities.length}`] = event.elevation
-      week.total += event.elevation
+      week[`e_${week.activities.length}`] = event[type]
+      week.total += event[type]
     })
 
   return (
     <div className="page page--wide">
-      <h1 className="text-center">Activities elevation</h1>
-      <br />
-      {isClient && <MyBar weeks={weeks} />}
+      <h1 className="text-center">Activities {type}</h1>
+
+      <div className="select-type">
+        <label>
+          <input type="radio" checked={type === 'elevation'} name="type" onChange={() => setType('elevation')} />
+          {' '}Elevation
+        </label>
+        {' '}
+        <label>
+          <input type="radio" checked={type === 'distance'} name="type" onChange={() => setType('distance')} />
+          {' '}Distance
+        </label>
+      </div>
+
+      {isClient && <MyBar weeks={weeks} measure={measure} />}
     </div>
   )
 }
