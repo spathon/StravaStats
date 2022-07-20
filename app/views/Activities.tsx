@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { getWeek } from 'date-fns'
 import {
   BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Bar, ResponsiveContainer,
@@ -81,23 +81,10 @@ function MyBar({ weeks, measure }) {
 }
 
 
-export default function Index() {
-  const [activities, setActive] = useState()
+export default function Activities({ activities }) {
   const [type, setType] = useState('elevation')
-  const [isClient, setIsClient] = useState(false)
-  useEffect(() => {
-    const gotData = localStorage.getItem('activities')
-    if (gotData) {
-      const things = JSON.parse(gotData)
-      if (Array.isArray(things)) {
-        setActive(things)
-        setIsClient(true)
-      }
-    }
-  }, [])
   const measure = useMemo(() => (type === 'elevation' ? 'm' : 'km'), [type])
 
-  if (!activities) return <div className="page text-center"><h1>Loading</h1></div>
   const thisWeek = getWeek(new Date(), { weekStartsOn: 1 })
   const weeks = Array(thisWeek)
     .fill()
@@ -142,7 +129,7 @@ export default function Index() {
         </label>
       </div>
 
-      {isClient && <MyBar weeks={weeks} measure={measure} />}
+      <MyBar weeks={weeks} measure={measure} />
     </div>
   )
 }

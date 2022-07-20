@@ -35,10 +35,11 @@ export default function App() {
   useEffect(() => {
     const userString = localStorage.getItem('user')
     if (userString) {
+      const activitiesString = localStorage.getItem('activities')
       setUser({
         state: 'LOGGED_IN',
         ...(JSON.parse(userString)),
-        hasActivities: localStorage.getItem('activities'),
+        activities: activitiesString ? JSON.parse(activitiesString) : false,
       })
     } else {
       setUser({ state: 'LOGGED_OUT'})
@@ -57,7 +58,7 @@ export default function App() {
             {user.state !== 'LOADING' && (
               <>
                 <Header user={user}/>
-                <Outlet />
+                <Outlet context={user} />
               </>
             )}
           </div>

@@ -1,32 +1,11 @@
-import { Link } from "@remix-run/react"
-import { useEffect, useState } from "react"
+import { useOutletContext } from '@remix-run/react'
+import Activities from '~/views/activities'
+import Authorize from '~/views/Authorize'
 
 
-export default function Index() {
-  const [hasActivities, setHasActivities] = useState(false)
-  useEffect(() => {
-    const jsonString = localStorage.getItem('activities')
-    if (jsonString) {
-      JSON.parse(jsonString)
-      setHasActivities(true)
-    }
-  }, [])
+export default function Index(props) {
+  const { activities } = useOutletContext()
 
-  return (
-    <div className="page text-center">
-      <h1>Strava elevation stats!</h1>
-      <br />
-      {!hasActivities && (
-        <p>
-          Authorize Strava to view elevation graph of your activities this year.
-          <br />
-          The data is only stored in the browser.
-        </p>
-      )}
-      {hasActivities
-        ? <Link to="/activities" className="btn">View my graph</Link>
-        : <Link to="/api/auth-strava" className="btn">Authorize Strava</Link>
-      }
-    </div>
-  )
+  if (activities) return <Activities activities={activities} />
+  return <Authorize />
 }
