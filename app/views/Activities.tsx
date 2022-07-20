@@ -12,6 +12,24 @@ const stacks = [
   { key: 'e_4', color: '#8884d8' },
   { key: 'e_5', color: '#18f4d8' },
   { key: 'e_6', color: '#5584f8' },
+  { key: 'e_7', color: '#5dcafa' },
+  { key: 'e_8', color: '#82ca9d' },
+  { key: 'e_9', color: '#ff5f6b' },
+  { key: 'e_10', color: '#8884d8' },
+  { key: 'e_11', color: '#18f4d8' },
+  { key: 'e_12', color: '#5584f8' },
+  { key: 'e_13', color: '#5dcafa' },
+  { key: 'e_14', color: '#82ca9d' },
+  { key: 'e_15', color: '#ff5f6b' },
+  { key: 'e_16', color: '#8884d8' },
+  { key: 'e_17', color: '#18f4d8' },
+  { key: 'e_18', color: '#5584f8' },
+  { key: 'e_19', color: '#5dcafa' },
+  { key: 'e_20', color: '#82ca9d' },
+  { key: 'e_21', color: '#ff5f6b' },
+  { key: 'e_22', color: '#8884d8' },
+  { key: 'e_23', color: '#18f4d8' },
+  { key: 'e_24', color: '#5584f8' },
 ]
 const getColor = (key) => stacks.find((s) => s.key === key)?.color || ''
 
@@ -54,7 +72,7 @@ function WeekTip({ payload, label, measure }) {
 
 function MyBar({ weeks, measure }) {
   return (
-    <ResponsiveContainer width="100%" height={300}>
+    <ResponsiveContainer width="100%" height={350}>
       <BarChart barCategoryGap="1%" data={weeks}>
         <defs>
           {stacks.map(({ key, color }) => <Gradient key={key} id={key} color={color} />)}
