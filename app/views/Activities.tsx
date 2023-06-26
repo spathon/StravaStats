@@ -104,6 +104,7 @@ export default function Activities({ activities }) {
   const [time, setTime] = useState('weeks')
   const measure = useMemo(() => (type === 'elevation' ? 'm' : 'km'), [type])
   const isWeeks = time === 'weeks'
+  const today = new Date()
 
   const thisWeek = isWeeks
     ? getWeek(new Date(), { weekStartsOn: 1 })
@@ -118,7 +119,7 @@ export default function Activities({ activities }) {
 
   // console.log(activities)
   activities
-    .filter((event) => new Date(event.start_date).getFullYear() === 2022)
+    .filter((event) => new Date(event.start_date).getFullYear() === today.getFullYear())
     .filter((event) => event.type === 'Run' || event.type === 'Hike' || event.type === 'BackcountrySki')
     // .filter((event) => event.total_elevation_gain > 100 && event.total_elevation_gain < 3000)
     .map((event) => ({
