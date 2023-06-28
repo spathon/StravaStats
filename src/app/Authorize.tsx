@@ -1,5 +1,4 @@
-import { Link } from "@remix-run/react"
-
+import Link from 'next/link'
 
 export default function Authorize() {
   return (
@@ -11,7 +10,9 @@ export default function Authorize() {
         <br />
         The data is only stored in the browser.
       </p>
-      <Link to="/api/auth-strava" className="btn">Authorize Strava</Link>
+      <Link href="/api/auth-strava" className="btn">
+        Authorize Strava
+      </Link>
     </div>
   )
 }
