@@ -4,13 +4,12 @@ import Activities from './Activities'
 import Authorize from './Authorize'
 import Header from './Header'
 
+export const runtime = 'edge'
+
 export default async function Home() {
   const cookieStore = cookies()
   const userId = cookieStore.get('user')
-  let user = null
-  if (userId && !Number.isNaN(Number(userId.value))) {
-    user = (await kv.get(`user:${userId.value}`)) as AppUser
-  }
+  const user = userId?.value ? ((await kv.get(`user:${userId.value}`)) as AppUser) : null
 
   return (
     <div>

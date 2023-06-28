@@ -44,14 +44,16 @@ export async function GET(req: NextRequest) {
     activities,
   }
 
+  const userUuid = crypto.randomUUID()
   const fiveDays = 5 * 24 * 60 * 60
-  await kv.set(`user:${userResp.athlete.id}`, JSON.stringify(user), { ex: fiveDays })
+  await kv.set(`user:${userUuid}`, JSON.stringify(user), { ex: fiveDays })
 
   cookies().set({
     name: 'user',
-    value: `${userResp.athlete.id}`,
+    value: `${userUuid}`,
     httpOnly: true,
     secure: true,
+    sameSite: 'lax',
   })
 
   redirect('/')

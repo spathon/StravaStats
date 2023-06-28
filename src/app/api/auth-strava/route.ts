@@ -1,5 +1,7 @@
 import { redirect } from 'next/navigation'
 
+export const runtime = 'edge'
+
 export function GET() {
   const params = new URLSearchParams({
     client_id: process.env.STRAVA_CLIENT_ID || '',
