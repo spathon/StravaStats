@@ -1,3 +1,4 @@
+import { Analytics } from '@vercel/analytics/react'
 import './reset.css'
 import './globals.css'
 
@@ -17,6 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             &copy; spathon | <a href="https://github.com/spathon/StravaStats">Code</a>
           </div>
         </div>
+        <Analytics />
       </body>
     </html>
   )
