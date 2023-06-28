@@ -3,27 +3,6 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { type NextRequest } from 'next/server'
 
-type StravaTokenResp = {
-  access_token: string
-  status: number
-  athlete: {
-    id: number
-    username: string
-    city: string
-    country: string
-    profile_medium: string
-  }
-}
-
-type StravaActivity = {
-  id: number
-  start_date: string
-  type: string
-  name: string
-  total_elevation_gain: number
-  distance: number
-}
-
 function sendResponse(str: string) {
   return new Response(str, { status: 500 })
 }
@@ -61,11 +40,12 @@ export async function GET(req: NextRequest) {
     username: userResp.athlete.username,
     city: userResp.athlete.city,
     country: userResp.athlete.country,
-    image: userResp.athlete.profile_medium,
+    profile_medium: userResp.athlete.profile_medium,
     activities,
   }
 
-  await kv.set(`user:${userResp.athlete.id}`, JSON.stringify(user), { ex: 5 * 24 * 60 })
+  const fiveDays = 5 * 24 * 60 * 60
+  await kv.set(`user:${userResp.athlete.id}`, JSON.stringify(user), { ex: fiveDays })
 
   cookies().set({
     name: 'user',

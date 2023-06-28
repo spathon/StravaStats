@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-export default function Header({ user }) {
+export default function Header({ user }: { user: AppUser | null }) {
   return (
     <div className="header">
       <div className="logo">Strava stats</div>

@@ -1,38 +1,20 @@
 'use client'
 
 import { getWeek, getMonth } from 'date-fns'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Bar, ResponsiveContainer } from 'recharts'
 
-const stacks = [
-  { key: 'e_1', color: '#5dcafa' },
-  { key: 'e_2', color: '#82ca9d' },
-  { key: 'e_3', color: '#ff5f6b' },
-  { key: 'e_4', color: '#8884d8' },
-  { key: 'e_5', color: '#18f4d8' },
-  { key: 'e_6', color: '#5584f8' },
-  { key: 'e_7', color: '#5dcafa' },
-  { key: 'e_8', color: '#82ca9d' },
-  { key: 'e_9', color: '#ff5f6b' },
-  { key: 'e_10', color: '#8884d8' },
-  { key: 'e_11', color: '#18f4d8' },
-  { key: 'e_12', color: '#5584f8' },
-  { key: 'e_13', color: '#5dcafa' },
-  { key: 'e_14', color: '#82ca9d' },
-  { key: 'e_15', color: '#ff5f6b' },
-  { key: 'e_16', color: '#8884d8' },
-  { key: 'e_17', color: '#18f4d8' },
-  { key: 'e_18', color: '#5584f8' },
-  { key: 'e_19', color: '#5dcafa' },
-  { key: 'e_20', color: '#82ca9d' },
-  { key: 'e_21', color: '#ff5f6b' },
-  { key: 'e_22', color: '#8884d8' },
-  { key: 'e_23', color: '#18f4d8' },
-  { key: 'e_24', color: '#5584f8' },
-]
-const getColor = (key) => stacks.find((s) => s.key === key)?.color || ''
+const colors = ['#5dcafa', '#82ca9d', '#8884d8', '#18f4d8', '#5584f8', '#ff5f6b']
+const stacks = Array(50)
+  .fill('')
+  .map((val, index) => ({
+    key: `stack${index}`,
+    color: colors[index % colors.length],
+  }))
 
-function Gradient({ id, color }) {
+const getColor = (index: number) => stacks[index]?.color || ''
+
+function Gradient({ id, color }: { id: string; color: string }) {
   return (
     <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
       <stop offset="5%" stopColor={color} stopOpacity={0.8} />
@@ -41,27 +23,23 @@ function Gradient({ id, color }) {
   )
 }
 
-function WeekTip({ payload, label, measure }) {
+function WeekTip({ payload, measure }: WeekTipProps) {
   return (
     <div className="weektip">
       <table className="table">
         <tbody>
           {payload
-            .slice()
-            .reverse()
-            .map((bar, index) => (
-              <tr
-                key={bar.name}
-                className="weektip__activity"
-                style={{ color: getColor(bar.name) }}
-              >
+            ?.filter((bar) => bar.value > 0)
+            ?.map((bar, index) => (
+              <tr key={bar.name} className="weektip__activity" style={{ color: getColor(index) }}>
                 <td className="activity_name">{bar?.payload?.activities?.[index]?.name}</td>
                 <td>
-                  {bar?.payload?.[bar.name]}
+                  {bar.value}
                   <span className="meta"> {measure}</span>
                 </td>
               </tr>
-            ))}
+            ))
+            ?.reverse()}
           <tr>
             <th>Total</th>
             <th className="weektip__total">
@@ -75,9 +53,11 @@ function WeekTip({ payload, label, measure }) {
   )
 }
 
-function MyBar({ weeks, measure }) {
+function MyBar({ weeks, type }: { weeks: Week[]; type: MesureType }) {
+  const measure = type === 'elevation' ? 'm' : 'km'
+
   return (
-    <ResponsiveContainer width="100%" height={350}>
+    <ResponsiveContainer height={350}>
       <BarChart barCategoryGap="1%" data={weeks}>
         <defs>
           {stacks.map(({ key, color }) => (
@@ -86,33 +66,36 @@ function MyBar({ weeks, measure }) {
         </defs>
         <XAxis dataKey="weekNr" />
         <CartesianGrid strokeDasharray="1 3" />
-        <YAxis tickFormatter={(val) => `${val} ${measure}`} />
+        <YAxis tickFormatter={(val: number) => `${val} ${measure}`} />
         <Tooltip cursor={{ opacity: 0.2 }} content={<WeekTip measure={measure} />} />
-        {stacks.map(({ key, color }) => (
-          <Bar key={key} dataKey={key} stackId="a" fill={`url(#${key})`} />
+        {stacks.map(({ key }, index) => (
+          <Bar
+            key={key}
+            dataKey={(payload: Week) => payload?.activities?.[index]?.[type] || 0}
+            stackId="a"
+            fill={`url(#${key})`}
+          />
         ))}
       </BarChart>
     </ResponsiveContainer>
   )
 }
 
-export default function Activities({ activities }) {
-  const [type, setType] = useState('elevation')
-  const [time, setTime] = useState('weeks')
-  const measure = useMemo(() => (type === 'elevation' ? 'm' : 'km'), [type])
+export default function Activities({ activities }: { activities: StravaActivity[] }) {
+  const [type, setType] = useState<MesureType>('elevation')
+  const [time, setTime] = useState<TimeType>('weeks')
   const isWeeks = time === 'weeks'
   const today = new Date()
 
   const thisWeek = isWeeks ? getWeek(new Date(), { weekStartsOn: 1 }) : getMonth(new Date()) + 1
-  const weeks = Array(thisWeek)
-    .fill()
+  const weeks: Week[] = Array(thisWeek)
+    .fill({})
     .map((val, index) => ({
       weekNr: index + 1,
       total: 0,
       activities: [],
     }))
 
-  // console.log(activities)
   activities
     .filter((event) => new Date(event.start_date).getFullYear() === today.getFullYear())
     .filter(
@@ -130,8 +113,8 @@ export default function Activities({ activities }) {
         ? getWeek(event.startDate, { weekStartsOn: 1 })
         : getMonth(event.startDate) + 1
       const week = weeks.find((w) => w.weekNr === weekNr)
+      if (!week) return
       week.activities.unshift(event)
-      week[`e_${week.activities.length}`] = event[type]
       week.total += event[type]
     })
 
@@ -146,6 +129,7 @@ export default function Activities({ activities }) {
               type="radio"
               checked={time === 'weeks'}
               name="time"
+              value="weeks"
               onChange={() => setTime('weeks')}
             />{' '}
             Weeks
@@ -155,6 +139,7 @@ export default function Activities({ activities }) {
               type="radio"
               checked={time === 'months'}
               name="time"
+              value="months"
               onChange={() => setTime('months')}
             />{' '}
             Months
@@ -183,7 +168,7 @@ export default function Activities({ activities }) {
         </div>
       </div>
 
-      <MyBar weeks={weeks} measure={measure} />
+      <MyBar weeks={weeks} type={type} />
     </div>
   )
 }

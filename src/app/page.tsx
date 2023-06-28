@@ -9,13 +9,13 @@ export default async function Home() {
   const userId = cookieStore.get('user')
   let user = null
   if (userId && !Number.isNaN(Number(userId.value))) {
-    user = await kv.get(`user:${userId.value}`)
+    user = (await kv.get(`user:${userId.value}`)) as AppUser
   }
-  console.log('uses', user)
+
   return (
     <div>
       <Header user={user} />
-      {user?.id ? <Activities activities={user?.activities} /> : <Authorize />}
+      {user?.id ? <Activities activities={user.activities} /> : <Authorize />}
     </div>
   )
 }
