@@ -8,11 +8,17 @@ export default function Header({ user }: { user: AppUser | null }) {
         {user?.username ? (
           <span>
             Hello, {user?.username}
-            <Link href="/api/auth-strava">Update data</Link>
-            <Link href="/api/logout">Logout</Link>
+            <Link prefetch={false} href="/api/auth-strava">
+              Update data
+            </Link>
+            <Link prefetch={false} href="/api/logout">
+              Logout
+            </Link>
           </span>
         ) : (
-          <Link href="/api/auth-strava">Login with Strava</Link>
+          <Link prefetch={false} href="/api/auth-strava">
+            Login with Strava
+          </Link>
         )}
       </div>
     </div>

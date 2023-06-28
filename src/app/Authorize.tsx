@@ -10,7 +10,7 @@ export default function Authorize() {
         <br />
         The data is only stored in the browser.
       </p>
-      <Link href="/api/auth-strava" className="btn">
+      <Link prefetch={false} href="/api/auth-strava" className="btn">
         Authorize Strava
       </Link>
     </div>
