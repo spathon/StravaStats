@@ -1,0 +1,13 @@
+{
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking"
+  ],
+  "plugins": ["@typescript-eslint"],
+  "parserOptions": {
+    "project": true,
+    "tsconfigRootDir": "."
+  },
+  "parser": "@typescript-eslint/parser"
+}
