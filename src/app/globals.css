@@ -16,6 +16,12 @@ p {
   margin: 0 0 1rem;
 }
 
+hr {
+  border: 0;
+  border-top: 1px solid #eee;
+  margin: 1rem 0;
+}
+
 .table {
   border-collapse: collapse;
   width: 100%;
@@ -123,6 +129,19 @@ p {
   justify-content: space-between;
   padding: 0 0 0.5rem;
 }
+
+.select-type {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.select-type input[type='radio'] {
+  margin: 0;
+}
+.select-type input[type='checkbox'] {
+  margin: 0 0.4rem 0 0;
+}
+
 .select-type label {
   cursor: pointer;
 }

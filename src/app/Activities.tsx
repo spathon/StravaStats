@@ -84,6 +84,7 @@ function MyBar({ weeks, type }: { weeks: Week[]; type: MesureType }) {
 export default function Activities({ activities }: { activities: StravaActivity[] }) {
   const [type, setType] = useState<MesureType>('elevation')
   const [time, setTime] = useState<TimeType>('weeks')
+  const [sports, setSports] = useState(['Run', 'Hike', 'BackcountrySki'])
   const isWeeks = time === 'weeks'
   const today = new Date()
 
@@ -96,11 +97,11 @@ export default function Activities({ activities }: { activities: StravaActivity[
       activities: [],
     }))
 
+  const allSports = [...new Set(activities.map((event) => event.type))]
+
   activities
     .filter((event) => new Date(event.start_date).getFullYear() === today.getFullYear())
-    .filter(
-      (event) => event.type === 'Run' || event.type === 'Hike' || event.type === 'BackcountrySki'
-    )
+    .filter((event) => sports.includes(event.type) || sports.length === 0)
     // .filter((event) => event.total_elevation_gain > 100 && event.total_elevation_gain < 3000)
     .map((event) => ({
       name: event.name,
@@ -169,6 +170,29 @@ export default function Activities({ activities }: { activities: StravaActivity[
       </div>
 
       <MyBar weeks={weeks} type={type} />
+
+      <hr />
+
+      <div>
+        <h2>Filer sports</h2>
+        <div className="select-type">
+          {allSports.map((type: string) => (
+            <label key={type}>
+              <input
+                type="checkbox"
+                checked={sports.includes(type)}
+                onChange={() =>
+                  setSports((prev) => {
+                    if (prev.includes(type)) return prev.filter((sport) => sport !== type)
+                    return [...prev, type]
+                  })
+                }
+              />
+              {type}
+            </label>
+          ))}
+        </div>
+      </div>
     </div>
   )
 }
