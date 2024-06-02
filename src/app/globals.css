@@ -52,6 +52,32 @@ hr {
   color: #777;
 }
 
+.m-auto {
+  margin: auto;
+}
+.desc {
+  font-size: 0.8rem;
+  color: #777;
+}
+
+.auth-btn {
+  border: 1px solid var(--strava-color);
+  border-radius: 4px;
+  background: url('/btn_strava_connectwith_light.svg');
+  display: inline-block;
+  transition: background-color 0.3s;
+  &:hover {
+    background-color: var(--strava-color);
+    img {
+      opacity: 1;
+    }
+  }
+  img {
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+}
+
 .header {
   height: 50px;
   padding: 10px;
@@ -68,17 +94,18 @@ hr {
 .header button {
   padding: 2px 7px;
   margin: 0 0 0 10px;
-  background: #ff550c;
+  background: rgb(255 255 255 / 20%);
   border: 1px solid #ff6624;
   border-radius: 4px;
-  color: #461500;
+  color: #fff;
   font: inherit;
   display: inline-block;
+  transition: all 0.1s;
 }
 .header a:hover,
 .header button:hover {
-  background: #ff6624;
-  color: #290c00;
+  background: rgb(255 255 255 / 10%);
+  text-shadow: 1px 1px 3px rgba(54, 24, 12, 0.62);
   border-color: #df4604;
   cursor: pointer;
 }

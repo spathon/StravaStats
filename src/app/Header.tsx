@@ -3,9 +3,9 @@ import Link from 'next/link'
 export default function Header({ user }: { user: AppUser | null }) {
   return (
     <div className="header">
-      <div className="logo">Strava stats</div>
+      <div className="logo">Exercise stats</div>
       <div>
-        {user?.username ? (
+        {user?.username && (
           <span>
             Hello, {user?.username}
             <Link prefetch={false} href="/api/auth-strava">
@@ -15,10 +15,6 @@ export default function Header({ user }: { user: AppUser | null }) {
               Logout
             </Link>
           </span>
-        ) : (
-          <Link prefetch={false} href="/api/auth-strava">
-            Login with Strava
-          </Link>
         )}
       </div>
     </div>
