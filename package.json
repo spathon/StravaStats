@@ -10,21 +10,19 @@
   },
   "dependencies": {
     "@vercel/analytics": "^1.0.1",
-    "@vercel/kv": "^2.0.0",
+    "@vercel/kv": "^3.0.0",
     "@vercel/speed-insights": "^1.0.11",
-    "date-fns": "^3.6.0",
-    "next": "14.2.3",
+    "date-fns": "^4.1.0",
+    "next": "15.0.3",
     "react": "^18",
     "react-dom": "^18",
     "recharts": "^2.7.2"
   },
   "devDependencies": {
-    "@types/node": "^20",
+    "@biomejs/biome": "1.8.3",
+    "@types/node": "^22",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.3",
-    "prettier": "^3.3.0",
     "typescript": "^5.4.5"
   }
 }
