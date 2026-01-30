@@ -13,7 +13,7 @@
     "@vercel/kv": "^3.0.0",
     "@vercel/speed-insights": "^1.0.11",
     "date-fns": "^4.1.0",
-    "next": "15.0.3",
+    "next": "15.0.7",
     "react": "^18",
     "react-dom": "^18",
     "recharts": "^2.7.2"
